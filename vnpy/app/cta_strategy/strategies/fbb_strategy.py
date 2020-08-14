@@ -137,13 +137,11 @@ class FbbStrategy(CtaTemplate):
 
         self.last_boll_pb = self.boll_pb
 
-        # elif self.boll_pb >= 1 \
-        #         and self.boll_pb_2 < 1:
+
         #     self.short(bar.close_price, self.fixed_size, False)
 
-        # elif self.pos < 0:
-        #     if self.boll_pb <= 1-self.boll_pb_sal:
-        #         self.cover(bar.close_price, self.pos, False)
+
+        #     self.cover(bar.close_price, self.pos, False)
 
         self.put_event()
 
@@ -152,7 +150,7 @@ class FbbStrategy(CtaTemplate):
         return max(order_size, min_size)
 
     def kdj_signal(self):
-        if self.k >= self.d:
+        if self.d <= self.k < 20:
             return True
 
 
