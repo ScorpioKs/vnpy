@@ -11,7 +11,7 @@ from decimal import Decimal
 from math import floor, ceil
 
 import numpy as np
-import talib
+from talib import _ta_lib as talib
 
 from .object import BarData, TickData
 from .constant import Exchange, Interval
@@ -668,23 +668,48 @@ class ArrayManager(object):
 
     def boll(
         self,
-        n: int,
-        dev: float,
+        n: int = 20,
+        dev: float = 2,
         array: bool = False
     ) -> Union[
-        Tuple[np.ndarray, np.ndarray],
-        Tuple[float, float]
+        Tuple[np.ndarray, np.ndarray, np.ndarray],
+        Tuple[float, float, float]
     ]:
         """
         Bollinger Channel.
         """
-        mid = self.sma(n, array)
-        std = self.std(n, array)
+        upper, middle, lower = talib.BBANDS(self.close, n, dev, dev, talib.MA_Type.SMA)
 
-        up = mid + std * dev
-        down = mid - std * dev
+        if array:
+            return upper, middle, lower
+        return upper[-1], middle[-1], lower[-1]
 
-        return up, down
+    def kdj(self,
+            fastk_period: int = 9,
+            slowk_period: int = 3,
+            slowd_period: int = 3,
+            array: bool = False
+    ) -> Union[
+        Tuple[np.ndarray, np.ndarray, np.ndarray],
+        Tuple[float, float, float]
+    ]:
+        k, d = talib.STOCH(
+            self.high_array,
+            self.low_array,
+            self.close_array,
+            fastk_period=fastk_period,
+            slowk_period=slowk_period,
+            slowk_matype=0,
+            slowd_period=slowd_period,
+            slowd_matype=0
+        )
+
+        j = (3*k)-(2*d)
+
+        if array:
+            return k, d, j
+        return k[-1], d[-1], j[-1]
+
 
     def keltner(
         self,
