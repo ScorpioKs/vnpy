@@ -33,7 +33,7 @@ def init(driver: Driver, settings: dict):
 
     db = init_funcs[driver](settings)
     bar, tick = init_models(db, driver)
-    return SqlManager(bar, tick)
+    return SqlManager(db, bar, tick)
 
 
 def init_sqlite(settings: dict):
@@ -338,9 +338,13 @@ def init_models(db: Database, driver: Driver):
 
 class SqlManager(BaseDatabaseManager):
 
-    def __init__(self, class_bar: Type[Model], class_tick: Type[Model]):
+    def __init__(self, database: Database, class_bar: Type[Model], class_tick: Type[Model]):
         self.class_bar = class_bar
         self.class_tick = class_tick
+        self.database = database
+
+    def get_database_connection(self):
+        return self.database.connection()
 
     def load_bar_data(
         self,

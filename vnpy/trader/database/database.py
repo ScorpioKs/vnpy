@@ -24,6 +24,10 @@ class Driver(Enum):
 class BaseDatabaseManager(ABC):
 
     @abstractmethod
+    def get_database_connection(self):
+        pass
+
+    @abstractmethod
     def load_bar_data(
         self,
         symbol: str,

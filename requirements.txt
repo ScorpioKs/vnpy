@@ -2,7 +2,7 @@ six==1.13.0
 wheel
 PyQt5~=5.15.0
 pyqtgraph==0.10.0
-dataclasses; python_version<="3.6"
+dataclasses; python_version<="3.7"
 qdarkstyle~=2.8.1
 requests~=2.24.0
 websocket-client~=0.57.0
@@ -11,7 +11,6 @@ pymysql
 psycopg2
 mongoengine~=0.20.0
 numpy~=1.19.1
-pandas==0.24.2
 matplotlib~=3.3.0
 seaborn~=0.10.1
 futu-api
@@ -27,6 +26,5 @@ plotly~=4.9.0
 enum34~=1.1.6
 tzlocal~=2.1
 scipy~=1.5.2
-pytz~=2019.3
 setuptools~=49.2.0
 ci~=0.1.1

@@ -193,6 +193,9 @@ class DbTickData(Document):
 
 class MongoManager(BaseDatabaseManager):
 
+    def get_database_connection(self):
+        pass
+
     def load_bar_data(
         self,
         symbol: str,
