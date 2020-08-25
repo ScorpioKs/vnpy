@@ -1,7 +1,7 @@
 """
 General utility functions.
 """
-
+from collections import defaultdict
 import json
 import logging
 import sys
@@ -12,12 +12,22 @@ from math import floor, ceil
 
 import numpy as np
 from talib import _ta_lib as talib
+import pandas as pd
 
-from .object import BarData, TickData
+from .object import BaseData, BarData, TickData, TradeData
 from .constant import Exchange, Interval
 
-
 log_formatter = logging.Formatter('[%(asctime)s] %(message)s')
+
+
+def data_to_frame(datadict: Dict[str,BaseData]):
+    pre_dict = defaultdict(list)
+    for data in datadict.values():
+        for k, v in data.__dict__.items():
+            pre_dict[k].append(v)
+
+    df = pd.DataFrame.from_dict(pre_dict)
+    return df
 
 
 def extract_vt_symbol(vt_symbol: str) -> Tuple[str, Exchange]:
@@ -175,11 +185,11 @@ class BarGenerator:
     """
 
     def __init__(
-        self,
-        on_bar: Callable,
-        window: int = 0,
-        on_window_bar: Callable = None,
-        interval: Interval = Interval.MINUTE
+            self,
+            on_bar: Callable,
+            window: int = 0,
+            on_window_bar: Callable = None,
+            interval: Interval = Interval.MINUTE
     ):
         """Constructor"""
         self.bar: BarData = None
@@ -575,11 +585,11 @@ class ArrayManager(object):
         return result[-1]
 
     def macd(
-        self,
-        fast_period: int,
-        slow_period: int,
-        signal_period: int,
-        array: bool = False
+            self,
+            fast_period: int,
+            slow_period: int,
+            signal_period: int,
+            array: bool = False
     ) -> Union[
         Tuple[np.ndarray, np.ndarray, np.ndarray],
         Tuple[float, float, float]
@@ -667,10 +677,10 @@ class ArrayManager(object):
         return result[-1]
 
     def boll(
-        self,
-        n: int = 20,
-        dev: float = 2,
-        array: bool = False
+            self,
+            n: int = 20,
+            dev: float = 2,
+            array: bool = False
     ) -> Union[
         Tuple[np.ndarray, np.ndarray, np.ndarray],
         Tuple[float, float, float]
@@ -689,7 +699,7 @@ class ArrayManager(object):
             slowk_period: int = 3,
             slowd_period: int = 3,
             array: bool = False
-    ) -> Union[
+            ) -> Union[
         Tuple[np.ndarray, np.ndarray, np.ndarray],
         Tuple[float, float, float]
     ]:
@@ -704,18 +714,17 @@ class ArrayManager(object):
             slowd_matype=0
         )
 
-        j = (3*k)-(2*d)
+        j = (3 * k) - (2 * d)
 
         if array:
             return k, d, j
         return k[-1], d[-1], j[-1]
 
-
     def keltner(
-        self,
-        n: int,
-        dev: float,
-        array: bool = False
+            self,
+            n: int,
+            dev: float,
+            array: bool = False
     ) -> Union[
         Tuple[np.ndarray, np.ndarray],
         Tuple[float, float]
@@ -732,7 +741,7 @@ class ArrayManager(object):
         return up, down
 
     def donchian(
-        self, n: int, array: bool = False
+            self, n: int, array: bool = False
     ) -> Union[
         Tuple[np.ndarray, np.ndarray],
         Tuple[float, float]
@@ -748,9 +757,9 @@ class ArrayManager(object):
         return up[-1], down[-1]
 
     def aroon(
-        self,
-        n: int,
-        array: bool = False
+            self,
+            n: int,
+            array: bool = False
     ) -> Union[
         Tuple[np.ndarray, np.ndarray],
         Tuple[float, float]
