@@ -20,7 +20,7 @@ from .constant import Exchange, Interval
 log_formatter = logging.Formatter('[%(asctime)s] %(message)s')
 
 
-def data_to_frame(datadict: Dict[str,BaseData]):
+def data_to_frame(datadict: Dict[str, BaseData]):
     pre_dict = defaultdict(list)
     for data in datadict.values():
         for k, v in data.__dict__.items():
@@ -189,7 +189,8 @@ class BarGenerator:
             on_bar: Callable,
             window: int = 0,
             on_window_bar: Callable = None,
-            interval: Interval = Interval.MINUTE
+            interval: Interval = Interval.MINUTE,
+            base_hour: int = 8
     ):
         """Constructor"""
         self.bar: BarData = None
@@ -204,6 +205,7 @@ class BarGenerator:
 
         self.last_tick: TickData = None
         self.last_bar: BarData = None
+        self.base_hour: int = base_hour  # 日K的开始时间从每天的几点开始
 
     def update_tick(self, tick: TickData) -> None:
         """
@@ -307,6 +309,11 @@ class BarGenerator:
                     if not self.interval_count % self.window:
                         finished = True
                         self.interval_count = 0
+
+        elif self.interval == Interval.DAILY:
+            if self.last_bar and bar.datetime.hour >= self.base_hour \
+                    and self.last_bar.datetime.hour <= self.base_hour-1:
+                finished = True
 
         if finished:
             self.on_window_bar(self.window_bar)
