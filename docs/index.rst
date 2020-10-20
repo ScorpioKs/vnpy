@@ -14,7 +14,7 @@ vn.py项目文档
    cta_backtester.md
    spread_trading.md
    option_master.md
-   portfolio_strategy.md
+   portfolio_strategy.md   
    algo_trader.md
    script_trader.md
 
@@ -25,5 +25,5 @@ vn.py项目文档
    chart_wizard.md
    portfolio_manager.md
    excel_rtd.md
-
+   
    contribution.md

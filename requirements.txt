@@ -28,3 +28,6 @@ tzlocal~=2.1
 scipy~=1.5.2
 setuptools~=49.2.0
 ci~=0.1.1
+QScintilla==2.11.4
+plotly
+quickfix
