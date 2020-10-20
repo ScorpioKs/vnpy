@@ -4,8 +4,8 @@ from vnpy.event import EventEngine
 from vnpy.trader.engine import MainEngine
 from vnpy.trader.ui import MainWindow, create_qapp
 
-from vnpy.gateway.binance import BinanceGateway
-from vnpy.gateway.bitmex import BitmexGateway
+# from vnpy.gateway.binance import BinanceGateway
+# from vnpy.gateway.bitmex import BitmexGateway
 # from vnpy.gateway.futu import FutuGateway
 # from vnpy.gateway.ib import IbGateway
 # from vnpy.gateway.ctp import CtpGateway
@@ -35,7 +35,7 @@ from vnpy.gateway.bitmex import BitmexGateway
 # from vnpy.gateway.deribit import DeribitGateway
 # from vnpy.gateway.uft import UftGateway
 # from vnpy.gateway.okexo import OkexoGateway
-# from vnpy.gateway.binancef import BinancefGateway
+from vnpy.gateway.binances import BinancesGateway
 # from vnpy.gateway.mt4 import Mt4Gateway
 # from vnpy.gateway.mt5 import Mt5Gateway
 
@@ -64,8 +64,8 @@ def main():
 
     main_engine = MainEngine(event_engine)
 
-    main_engine.add_gateway(BinanceGateway)
-    main_engine.add_gateway(BitmexGateway)
+    # main_engine.add_gateway(BinanceGateway)
+    # main_engine.add_gateway(BitmexGateway)
     # main_engine.add_gateway(CtpGateway)
     # main_engine.add_gateway(CtptestGateway)
     # main_engine.add_gateway(MiniGateway)
@@ -95,7 +95,7 @@ def main():
     # main_engine.add_gateway(BybitGateway)
     # main_engine.add_gateway(DeribitGateway)
     # main_engine.add_gateway(OkexoGateway)
-    # main_engine.add_gateway(BinancefGateway)
+    main_engine.add_gateway(BinancesGateway)
     # main_engine.add_gateway(Mt4Gateway)
     # main_engine.add_gateway(Mt5Gateway)
 
@@ -110,9 +110,9 @@ def main():
     # main_engine.add_app(SpreadTradingApp)
     # main_engine.add_app(PortfolioManagerApp)
     # main_engine.add_app(OptionMasterApp)
-    main_engine.add_app(ChartWizardApp)
+    # main_engine.add_app(ChartWizardApp)
     # main_engine.add_app(ExcelRtdApp)
-    main_engine.add_app(DataManagerApp)
+    # main_engine.add_app(DataManagerApp)
     # main_engine.add_app(PortfolioStrategyApp)
     
     main_window = MainWindow(main_engine, event_engine)
