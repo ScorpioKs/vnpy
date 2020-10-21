@@ -21,7 +21,7 @@ class FengOversoldStrategy(CtaTemplate):
 
     oversold_pct = -0.05  # 当日跌幅超过5%
     limit_amt = 10.0  # 最小交易资金10 USDT -binance
-    fixed_size = 1
+    fixed_size = 1.0
 
     parameters = [
         "oversold_pct",
@@ -81,11 +81,31 @@ class FengOversoldStrategy(CtaTemplate):
         if not am.inited:
             return
 
+        long_signal = 0
+        min_size = max(self.fixed_size, self.size_by_limit_amt(self.limit_amt, bar.close_price))
+
+        # 两日K 连续下跌，总跌幅超过 oversold_pct &，并且 (kdj 超跌，j <0 或 日K下穿 BOLL 上界超涨后的大跌)
+        price_change_pct_d1 = (am.close_array[-2] - am.open_array[-2]) / am.open_array[-2]  # 计算第一日跌幅%
+        price_change_pct_d2 = (am.close_array[-1] - am.open_array[-1]) / am.open_array[-1]  # 计算第二日跌幅%
+        price_change_pct_2d = price_change_pct_d1 + price_change_pct_d2
+        upper, middle, lower = am.boll(array=True)
+
+        # 判断两日K线是否下穿过BOLL 上界
+        downcross_flag = 0
+        if am.open_array[-2] >= upper[-2] and am.close_array[-1] < lower[-1]:
+            downcross_flag = 1
+
+        k, d, j = am.kdj()
+        if price_change_pct_d1 < 0 and price_change_pct_d2 < 0 and \
+                price_change_pct_2d <= self.oversold_pct and \
+                (j < 0 or downcross_flag == 1):
+            long_signal = 0
+
+        # 日K 跌幅超过 oversold_pct
         price_change_pct = (bar.close_price - bar.open_price) / bar.open_price  # 计算当日跌幅
         print(str(bar.datetime) + " : " + str(price_change_pct))
         if price_change_pct <= self.oversold_pct:
-            min_size = self.size_by_limit_amt(self.limit_amt, bar.close_price)
-            self.buy(bar.close_price, max(self.fixed_size, min_size), False)
+            long_signal = 1
 
         # elif self.boll_pb >= 1 \
         #         and self.boll_pb_2 < 1:
@@ -93,6 +113,10 @@ class FengOversoldStrategy(CtaTemplate):
 
         if self.pos > 0:
             self.sell(bar.close_price, self.pos, False)
+
+        print(str(bar.datetime) + " : " + str(price_change_pct) + " : " + str(price_change_pct_2d))
+        if long_signal == 1:
+            self.buy(bar.close_price, min_size, False)
 
         # elif self.pos < 0:
         #     if self.boll_pb <= 1-self.boll_pb_sal:
